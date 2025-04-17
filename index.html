@@ -3,7 +3,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
-  <title>HACCP 60A 動態模擬考</title>
+  <title>HACCP 60A 模擬考（大型動態題庫版）</title>
   <style>
     body { font-family: "Noto Sans TC", sans-serif; padding: 20px; background: #f9fff9; }
     h1, h2 { color: #2a7a2e; }
@@ -15,117 +15,101 @@
   </style>
 </head>
 <body>
-  <h1>🌿 HACCP 60A 模擬考｜動態出題版</h1>
-  <p>每次點「出新題目」就會隨機產生新的 10 題模擬題！</p>
-  <button onclick="generateQuestions()">🎲 出新題目</button>
-  <form id="examForm"></form>
-  <button onclick="checkAnswers()">✅ 查看成績</button>
-  <div class="result" id="resultBlock"></div>
+<h1>🌿 HACCP 60A 模擬考｜隨機 20 題大題庫版</h1>
+<p>每次點「🎲 出新題目」會從大題庫中隨機抽出 10 題選擇 + 10 題是非題</p>
+<button onclick="generateExam()">🎲 出新題目</button>
+<form id="examForm"></form>
+<button onclick="checkAnswers()">✅ 查看成績</button>
+<div class="result" id="resultBlock"></div>
 
 <script>
-const questions = [
-  {
-    text: "HACCP 的第一原則為何？",
-    options: ["A. 設定限值", "B. 危害分析", "C. 建立紀錄", "D. 驗證程序"],
-    correct: "B"
-  },
-  {
-    text: "下列哪一項屬於物理性危害？",
-    options: ["A. 細菌", "B. 農藥殘留", "C. 金屬碎片", "D. 清潔劑"],
-    correct: "C"
-  },
-  {
-    text: "GHP 是否只適用於進口食品業者？",
-    options: ["A. 是", "B. 否"],
-    correct: "B"
-  },
-  {
-    text: "中心溫度加熱 75°C 是為了控制什麼危害？",
-    options: ["A. 化學性", "B. 生物性", "C. 物理性", "D. 營養流失"],
-    correct: "B"
-  },
-  {
-    text: "HACCP 計畫中 CCP 是什麼意思？",
-    options: ["A. 危害分類", "B. 生產步驟", "C. 關鍵控制點", "D. 生產記錄"],
-    correct: "C"
-  },
-  {
-    text: "食品標示不實可能屬於什麼危害？",
-    options: ["A. 生物性", "B. 化學性", "C. 誤導性", "D. 法規性"],
-    correct: "D"
-  },
-  {
-    text: "何者不是 HACCP 七原則之一？",
-    options: ["A. 危害分析", "B. 決定 CCP", "C. 客訴處理", "D. 驗證程序"],
-    correct: "C"
-  },
-  {
-    text: "交叉污染最常見的預防方法？",
-    options: ["A. 包裝密封", "B. 人員清潔分流", "C. 加熱殺菌", "D. 冷藏保存"],
-    correct: "B"
-  },
-  {
-    text: "HACCP 中記錄保存的目的是？",
-    options: ["A. 計算成本", "B. 員工考核", "C. 法規遵循與可追溯", "D. 提高口感"],
-    correct: "C"
-  },
-  {
-    text: "危害分析包含哪三類危害？",
-    options: ["A. 生物性、化學性、物理性", "B. 微生物、藥物、光線", "C. 氣味、雜質、重量", "D. 營養素、酸鹼值、包裝"],
-    correct: "A"
-  }
+const mcQuestions = [
+  { text: "HACCP 的第一原則為何？", options: ["A. 設定限值", "B. 危害分析", "C. 建立紀錄", "D. 驗證程序"], correct: "B" },
+  { text: "下列哪一項屬於物理性危害？", options: ["A. 細菌", "B. 農藥殘留", "C. 金屬碎片", "D. 清潔劑"], correct: "C" },
+  { text: "GHP 是否只適用於進口食品業者？", options: ["A. 是", "B. 否"], correct: "B" },
+  { text: "中心溫度加熱 75°C 是為了控制什麼危害？", options: ["A. 化學性", "B. 生物性", "C. 物理性", "D. 營養流失"], correct: "B" },
+  { text: "HACCP 計畫中 CCP 是什麼意思？", options: ["A. 危害分類", "B. 生產步驟", "C. 關鍵控制點", "D. 生產記錄"], correct: "C" },
+  { text: "食品標示不實可能屬於什麼危害？", options: ["A. 生物性", "B. 化學性", "C. 誤導性", "D. 法規性"], correct: "D" },
+  { text: "何者不是 HACCP 七原則之一？", options: ["A. 危害分析", "B. 決定 CCP", "C. 客訴處理", "D. 驗證程序"], correct: "C" },
+  { text: "交叉污染最常見的預防方法？", options: ["A. 包裝密封", "B. 人員清潔分流", "C. 加熱殺菌", "D. 冷藏保存"], correct: "B" },
+  { text: "HACCP 中記錄保存的目的是？", options: ["A. 計算成本", "B. 員工考核", "C. 法規遵循與可追溯", "D. 提高口感"], correct: "C" },
+  { text: "危害分析包含哪三類危害？", options: ["A. 生物性、化學性、物理性", "B. 微生物、藥物、光線", "C. 氣味、雜質、重量", "D. 包裝、照明、人員"], correct: "A" }
 ];
 
-let currentQuestions = [];
+const tfQuestions = [
+  { text: "HACCP 可以完全取代 GHP。", correct: "X" },
+  { text: "GHP 是 HACCP 的基礎之一。", correct: "O" },
+  { text: "設置金屬探測器是預防化學性危害。", correct: "X" },
+  { text: "監控溫度是控制生物性危害的方法。", correct: "O" },
+  { text: "矯正措施應在偏離限值時立即啟動。", correct: "O" },
+  { text: "食品製程的每個步驟都是 CCP。", correct: "X" },
+  { text: "記錄保存是 HACCP 七原則之一。", correct: "O" },
+  { text: "所有 HACCP 計畫都必須一模一樣。", correct: "X" },
+  { text: "冷藏必須維持在 7°C 以下屬於 CCP 控制。", correct: "O" },
+  { text: "食物外觀不佳屬於物理性危害。", correct: "X" }
+];
 
-function generateQuestions() {
+function shuffle(array) {
+  let currentIndex = array.length, randomIndex;
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+  }
+  return array;
+}
+
+function generateExam() {
   const container = document.getElementById("examForm");
   container.innerHTML = "";
-  currentQuestions = [];
-  const usedIndexes = new Set();
-  while (currentQuestions.length < 10) {
-    const i = Math.floor(Math.random() * questions.length);
-    if (!usedIndexes.has(i)) {
-      usedIndexes.add(i);
-      currentQuestions.push(questions[i]);
-    }
-  }
-  currentQuestions.forEach((q, idx) => {
-    const qid = `q${idx}`;
+  document.getElementById("resultBlock").innerHTML = "";
+
+  const selectedMC = shuffle([...mcQuestions]).slice(0, 10);
+  const selectedTF = shuffle([...tfQuestions]).slice(0, 10);
+  const all = [...selectedMC.map((q, i) => ({ ...q, type: 'mc', id: i + 1 })),
+               ...selectedTF.map((q, i) => ({ ...q, type: 'tf', id: i + 11 }))];
+
+  all.forEach((q, idx) => {
     const block = document.createElement("div");
     block.className = "question-block";
-    block.innerHTML = `<p>${idx + 1}. ${q.text}</p>`;
-    q.options.forEach(opt => {
-      const optCode = opt[0];
+    block.innerHTML = `<p>${q.id}. ${q.text} <span style="color:#888">（${q.type === 'mc' ? '選擇題' : '是非題'}）</span></p>`;
+    if (q.type === "mc") {
+      q.options.forEach(opt => {
+        const val = opt[0];
+        block.innerHTML += `<label><input type="radio" name="q${q.id}" value="${val}"> ${opt}</label>`;
+      });
+      const ans = q.options.find(opt => opt.startsWith(q.correct));
+      block.innerHTML += `<div class="answer" id="ans-q${q.id}">✔ 正確答案：${ans}</div>`;
+    } else {
       block.innerHTML += `
-        <label><input type="radio" name="${qid}" value="${optCode}"> ${opt}</label>`;
-    });
-    block.innerHTML += `<div class="answer" id="ans-${qid}">✔ 正確答案是：${q.correct}. ${q.options.find(o => o.startsWith(q.correct))}</div>`;
+        <label><input type="radio" name="q${q.id}" value="O"> 正確</label>
+        <label><input type="radio" name="q${q.id}" value="X"> 錯誤</label>
+        <div class="answer" id="ans-q${q.id}">✔ 正確答案：應選「${q.correct === "O" ? "正確" : "錯誤"}」</div>`;
+    }
     container.appendChild(block);
   });
-  document.getElementById("resultBlock").innerHTML = "";
 }
 
 function checkAnswers() {
   let score = 0;
   let wrongs = [];
-  currentQuestions.forEach((q, idx) => {
-    const qid = `q${idx}`;
-    const selected = document.querySelector(`input[name="${qid}"]:checked`);
-    const correct = q.correct;
-    const answerBlock = document.getElementById(`ans-${qid}`);
-    answerBlock.style.display = "block";
-    if (selected && selected.value === correct) {
-      score += 10;
+  for (let i = 1; i <= 20; i++) {
+    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+    const correctAns = document.getElementById(`ans-q${i}`);
+    correctAns.style.display = "block";
+    const correctVal = correctAns.textContent.includes("應選") ? (correctAns.textContent.includes("正確") ? "O" : "X")
+                      : correctAns.textContent[7]; // 文字第8字是選項代號
+    if (selected && selected.value === correctVal) {
+      score += i <= 10 ? 3 : 2;
     } else {
-      wrongs.push(idx + 1);
+      wrongs.push(i);
     }
-  });
+  }
   document.getElementById("resultBlock").innerHTML =
-    `🎯 總得分：${score} / 100<br>❌ 錯題題號：${wrongs.length > 0 ? wrongs.join(", ") : "無，全對！"}`;
+    `✅ 總分：${score} / 100<br>❌ 錯題：${wrongs.length > 0 ? wrongs.join(", ") : "無，全對！"}`;
 }
 
-window.onload = generateQuestions;
+window.onload = generateExam;
 </script>
 </body>
 </html>
